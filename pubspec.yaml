@@ -1,0 +1,22 @@
+name: riverpod_oauth_dio
+description: Oven-ready OAuth 2.0 for Riverpod and Dio
+version: 0.1.0
+homepage: https://github.com/netsells/riverpod_oauth_dio
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  dartx: ^1.1.0
+  dio: ^4.0.6
+  flutter:
+    sdk: flutter
+  flutter_secure_storage: ^5.0.2
+  oauth_dio: ^0.2.7
+  riverpod: ^1.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  netsells_flutter_analysis: ^3.0.0
