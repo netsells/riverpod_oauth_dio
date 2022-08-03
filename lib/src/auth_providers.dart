@@ -19,6 +19,9 @@ import 'package:riverpod_oauth_dio/src/secure_token_storage.dart';
 ///
 /// [secureStorage] can be used to provide a [SecureTokenStorage] instance.
 /// Useful if you want to use a mock/fake version in tests.
+///
+/// [onCreated] allows you to execute some code on the [OAuth] object
+/// before the provider returns it.
 // ignore: long-parameter-list
 Provider<OAuth> createOAuthProvider({
   required String Function(Ref) tokenName,
@@ -27,6 +30,7 @@ Provider<OAuth> createOAuthProvider({
   String Function(Ref) tokenEndpoint = _defaultTokenEndpoint,
   FlutterSecureStorage Function(Ref) secureStorage = _defaultStorage,
   required Dio Function(Ref) dio,
+  OAuth Function(OAuth) onCreated = _defaultOnCreated,
   String? name,
   List<ProviderOrFamily>? dependencies,
   Family<dynamic, dynamic, ProviderBase<dynamic>>? from,
@@ -34,15 +38,17 @@ Provider<OAuth> createOAuthProvider({
 }) {
   return Provider(
     (ref) {
-      return OAuth(
-        tokenUrl: tokenEndpoint(ref),
-        clientId: clientId(ref),
-        clientSecret: clientSecret(ref),
-        storage: SecureTokenStorage(
-          name: tokenName(ref),
-          storage: secureStorage(ref),
+      return onCreated(
+        OAuth(
+          tokenUrl: tokenEndpoint(ref),
+          clientId: clientId(ref),
+          clientSecret: clientSecret(ref),
+          storage: SecureTokenStorage(
+            name: tokenName(ref),
+            storage: secureStorage(ref),
+          ),
+          dio: dio(ref),
         ),
-        dio: dio(ref),
       );
     },
     name: name,
@@ -54,3 +60,4 @@ Provider<OAuth> createOAuthProvider({
 
 String _defaultTokenEndpoint(Ref _) => 'oauth/token';
 FlutterSecureStorage _defaultStorage(Ref _) => const FlutterSecureStorage();
+OAuth _defaultOnCreated(OAuth oAuth) => oAuth;
